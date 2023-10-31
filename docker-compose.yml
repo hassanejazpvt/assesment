@@ -1,0 +1,52 @@
+version: "3.8"
+
+networks:
+  assesment-network:
+    name: assesment-network
+    driver: bridge
+
+volumes:
+  vendor:
+  node_modules:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: assesment-app
+    depends_on:
+      - db
+    volumes:
+      - ./:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    ports:
+      - 8100:80
+    networks:
+      - assesment-network
+
+  db:
+    image: mariadb
+    restart: always
+    networks:
+      - assesment-network
+    container_name: assesment-db
+    volumes:
+      - .docker/db:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: "assesment@root"
+      MARIADB_DATABASE: assesment
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    networks:
+      - assesment-network
+    container_name: assesment-phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - 8080:80
+    environment:
+      - PMA_HOST=db

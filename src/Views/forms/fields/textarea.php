@@ -1,0 +1,1 @@
+<textarea <?php echo $isRequired ? 'required' : ''; ?> class="form-control" name="fields[<?php echo $field['id']; ?>]" id="field_no_<?php echo $index + 1; ?>"></textarea>
